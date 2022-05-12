@@ -6,11 +6,13 @@ const scoreText = document.getElementById('score');
 const progressBarFull = document.getElementById('progressBarFull');
 const submitAnswer = document.getElementById('submitAnswer');
 const timerText = document.getElementById('timer');
+const mostRecentScore = +localStorage.getItem("mostRecentScore");
 
+scoreText.innerText = mostRecentScore;
 
 let currentQuestion = {};
 let acceptingAnswers = false;
-let score = 0;
+let score = mostRecentScore;
 let questionCounter = 0;
 let availableQuesions = [];
 let skippedAnswers = [];
@@ -77,11 +79,16 @@ const MAX_QUESTIONS = QuestionNum.length;
 
 startGame = () => {
     questionCounter = 0;
-    score = 0;
+   // score = 0;
     availableQuesions = [...questions];
+    //wheelOfFortune()
     getNewQuestion();
     stertTimer();
 };
+
+//wheelOfFortune = () => {
+
+//}
 
 stertTimer = () => {
     setTimeout(() => {

@@ -1,21 +1,95 @@
-﻿
-let container = document.querySelector(".container2");
-let number = Math.ceil(Math.random() * 1000);
-let arrow = document.getElementsByClassName("arrow");
+﻿const sectors = [
+    { color: "#4AEC96", label: "700" },
+    { color: "#FF6E1F", label: "200" },
+    { color: "#EDF8FE", label: "100" },
+    { color: "#FF3130", label: "400" },
+    { color: "#4AEC96", label: "700" },
+    { color: "#FF6E1F", label: "200" },
+    { color: "#EDF8FE", label: "100" },
+    { color: "#FF3130", label: "400" },
+];
 
-//getOffset(arrow);
+const rand = (m, M) => Math.random() * (M - m) + m;
+const tot = sectors.length;
+const wheelScore = document.getElementById("wheelScore");
+const EL_spin = document.querySelector("#spin");
+const wheel = document.getElementById("wheel").getContext('2d');
+const dia = wheel.canvas.width;
+const rad = dia / 2;
+const PI = Math.PI;
+const TAU = 2 * PI;
+const arc = TAU / sectors.length;
+let score = 0;
 
-//function getOffset(el) {
-//    alert("in");
-//    const rect = el.getBoundingClientRect();
-//    alert(
-//    "left:" + rect.left +
-//        "top:" + rect.top);
-//}
+const Continue = document.getElementById("Continue");
+const spinBTN = document.getElementById("spinBTN");
+
+const friction = 0.98; // 0.995=soft, 0.99=mid, 0.98=hard
+let angVel = 0; // Angular velocity
+let ang = 0; // Angle in radians
+
+const getIndex = () => Math.floor(tot - ang / TAU * tot) % tot;
+
+function drawSector(sector, i) {
+    const ang = arc * i;
+    wheel.save();
+    // COLOR
+    wheel.beginPath();
+    wheel.fillStyle = sector.color;
+    wheel.moveTo(rad, rad);
+    wheel.arc(rad, rad, rad, ang, ang + arc);
+    wheel.lineTo(rad, rad);
+    wheel.fill();
+    // TEXT
+    wheel.translate(rad, rad);
+    wheel.rotate(ang + arc / 2);
+    wheel.textAlign = "right";
+    wheel.fillStyle = "#001546";
+    wheel.font = "bold 30px sans-serif";
+    wheel.fillText(sector.label, rad - 10, 10);
+    wheel.restore();
+};
 
 
+function rotate() {
+    const sector = sectors[getIndex()];
+    wheel.canvas.style.transform = `rotate(${ang - PI / 2}rad)`;
+}
 
-spinWheel = () => {
-	container.style.transform = "rotate(" + number + "deg)";
-	number += Math.ceil(Math.random() * 1000);
+function frame() {
+    if (!angVel) return;
+    angVel *= friction; // Decrement velocity by friction
+    if (angVel < 0.002) {
+        angVel = 0; // Bring to stop
+        const sector = sectors[getIndex()];
+        score = sector.label;
+        wheelScore.innerText += score ;
+        Continue.disabled = false;
+        spinBTN.disabled = true;
+
+    }
+    ang += angVel; // Update angle
+    ang %= TAU; // Normalize angle
+    
+    rotate();
+}
+
+function engine() {
+    frame();
+    requestAnimationFrame(engine)
+}
+
+// INIT
+sectors.forEach(drawSector);
+rotate(); // Initial rotation
+engine(); // Start engine
+
+
+wheelRotate = () => {
+    if (!angVel) angVel = rand(0.25, 0.35);
+}
+
+goToGame = () => {
+    localStorage.setItem("mostRecentScore", score);
+    window.location.assign('/Game.html')
 }
