@@ -1,83 +1,27 @@
-﻿const employeeNumber = document.getElementById('employeeNumber');
-const GameCode = document.getElementById('GameCode');
+﻿const employeeName = document.getElementById('employeeName');
+const employeeEmail = document.getElementById('employeeEmail');
 const StartGame = document.getElementById('StartGame');
 const ErrorHelp = document.getElementById('ErrorHelp');
 
-let myUsers = [];
-
-employeeNumber.addEventListener('keyup', () => {
-    GameCode.addEventListener('keyup', () => {
-        StartGame.disabled = !GameCode.value;
+employeeName.addEventListener('keyup', () => {
+    employeeEmail.addEventListener('keyup', () => {
+        StartGame.disabled = !employeeEmail.value;
     });
 });
 
-users = [
 
-    {
-        name: "Limor",
-        employeeNum: "112233",
-        department: "L&D",
-        userGames: [
-            "1111",
-            "2222"
-        ]
-    },
-    {
-        name: "Liron",
-        employeeNum: "223344",
-        department: "L&D",
-        userGames: [
-            "1111",
-            "3333"
-        ]
-
-    },
-    {
-        name: "Yotam",
-        employeeNum: "334455",
-        department: "consultant",
-        userGames: [
-            "2222",
-            "4444"
-        ]
-    },
-    {
-        name: "Roi",
-        employeeNum: "445566",
-        department: "UX/UI",
-        userGames: [
-            "1111",
-            "3333"
-        ]
-    }
-]
 
 StartTheGame = (e) => {
 
-    myUsers = [...users];
+    e.preventDefault();
 
-    myUsers.forEach(function (myUser) {
-        e.preventDefault();
-        if (myUser.employeeNum == employeeNumber.value) {
-            const userName = myUser.name;
-            myUser.userGames.forEach(function (gameCode) {
-                if (GameCode.value == gameCode) {
-                    
-                    window.location.href = "OpeningPage.html";
-                    localStorage.setItem("userName", JSON.stringify(userName));
+    if (employeeName.value != null && !employeeEmail.value != null) {
+        window.location.href = "OpeningPage.html";
+        localStorage.setItem("userName", JSON.stringify(employeeName.value));
+        localStorage.setItem("mostRecentScore", 0);
+    }
+    else {
+        ErrorHelp.innerText = "Plese enter your full name and Email";
 
-                }
-                else {
-                    
-                    ErrorHelp.innerText ="You are not associated with this game";
-                }
-
-            });
-        }
-        else {
-            
-            ErrorHelp.innerText ="The employee number is incorrect";
-        }
-    });
-    
+    }
 }

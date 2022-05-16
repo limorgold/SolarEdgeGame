@@ -1,35 +1,35 @@
 ﻿const sectors = [
-    { color: "#4AEC96", label: "700" },
-    { color: "#FF6E1F", label: "200" },
-    { color: "#EDF8FE", label: "100" },
-    { color: "#FF3130", label: "400" },
-    { color: "#4AEC96", label: "700" },
-    { color: "#FF6E1F", label: "200" },
-    { color: "#EDF8FE", label: "100" },
-    { color: "#FF3130", label: "400" },
+    { color: "#4AEC96", label: 700 },
+    { color: "#FF6E1F", label: 200 },
+    { color: "#EDF8FE", label: 100 },
+    { color: "#FF3130", label: 400 },
+    { color: "#4AEC96", label: 700 },
+    { color: "#FF6E1F", label: 200 },
+    { color: "#EDF8FE", label: 100 },
+    { color: "#FF3130", label: 400 },
 ];
 
 const rand = (m, M) => Math.random() * (M - m) + m;
 const tot = sectors.length;
 const wheelScore = document.getElementById("wheelScore");
-const EL_spin = document.querySelector("#spin");
 const wheel = document.getElementById("wheel").getContext('2d');
 const dia = wheel.canvas.width;
 const rad = dia / 2;
 const PI = Math.PI;
 const TAU = 2 * PI;
 const arc = TAU / sectors.length;
-let score = 0;
+let score = +localStorage.getItem("mostRecentScore");
 
 const Continue = document.getElementById("Continue");
 const spinBTN = document.getElementById("spinBTN");
 
-const friction = 0.98; // 0.995=soft, 0.99=mid, 0.98=hard
+const friction = 0.98;  // speed
 let angVel = 0; // Angular velocity
 let ang = 0; // Angle in radians
 
 const getIndex = () => Math.floor(tot - ang / TAU * tot) % tot;
 
+// creat wheel
 function drawSector(sector, i) {
     const ang = arc * i;
     wheel.save();
@@ -52,7 +52,6 @@ function drawSector(sector, i) {
 
 
 function rotate() {
-    const sector = sectors[getIndex()];
     wheel.canvas.style.transform = `rotate(${ang - PI / 2}rad)`;
 }
 
@@ -62,8 +61,8 @@ function frame() {
     if (angVel < 0.002) {
         angVel = 0; // Bring to stop
         const sector = sectors[getIndex()];
-        score = sector.label;
-        wheelScore.innerText += score ;
+        score += sector.label;
+        wheelScore.innerText += "Score: " + score ;
         Continue.disabled = false;
         spinBTN.disabled = true;
 
@@ -91,5 +90,5 @@ wheelRotate = () => {
 
 goToGame = () => {
     localStorage.setItem("mostRecentScore", score);
-    window.location.assign('/Game.html')
+    window.location.assign('/Gambelin.html');
 }

@@ -7,6 +7,7 @@ const progressBarFull = document.getElementById('progressBarFull');
 const submitAnswer = document.getElementById('submitAnswer');
 const timerText = document.getElementById('timer');
 const mostRecentScore = +localStorage.getItem("mostRecentScore");
+let gambelAmount = +localStorage.getItem("gambelChoice");
 
 scoreText.innerText = mostRecentScore;
 
@@ -21,6 +22,7 @@ let selectedChoice;
 let selectedAnswer;
 let timer = 1;
 let time = timer * 60;
+let choiceContainer;
 
 questions = [
 
@@ -73,22 +75,19 @@ questions = [
 ]
 
 //CONSTANTS
-const CORRECT_BONUS = 10;
+const CORRECT_BONUS = gambelAmount;
 let QuestionNum = [...questions];
 const MAX_QUESTIONS = QuestionNum.length;
 
 startGame = () => {
-    questionCounter = 0;
-   // score = 0;
-    availableQuesions = [...questions];
-    //wheelOfFortune()
-    getNewQuestion();
-    stertTimer();
+   
+        questionCounter = 0;
+        availableQuesions = [...questions];
+        getNewQuestion();
+        stertTimer();
+   
 };
 
-//wheelOfFortune = () => {
-
-//}
 
 stertTimer = () => {
     setTimeout(() => {
@@ -116,6 +115,7 @@ getNewQuestion = () => {
         //go to the end page
         return window.location.assign('/end.html');
     }
+
     questionCounter++;
 
     progressText.innerText = "Question " + questionCounter + "/" + MAX_QUESTIONS;
@@ -125,13 +125,48 @@ getNewQuestion = () => {
     currentQuestion = availableQuesions[questionIndex];
     question.innerText = currentQuestion.question;
 
+    availableQuesions.splice(questionIndex, 1);
+    acceptingAnswers = true;
+
+    //!!!!!!!!!!!!!!!1
+    for (let i = 1; i < 5; i++) {
+    
+         choiceContainer = document.createElement(`div`);
+        choiceContainer.className = 'choiceContainer';
+        choiceContainer.id = 'choiceContainer'+i;
+        const myChoice = choiceContainer.appendChild(document.createElement(`p`));
+        myChoice.className = `choice-text`;
+        myChoice.dataset = i;
+        myChoice.appendChild(document.createTextNode(currentQuestion['choice' + i]));
+        myChoice.addEventListener('click', (e) => {
+            alert(currentQuestion['choice' + i]);
+            if (!acceptingAnswers) {
+                selectedChoice.parentElement.classList.remove("chosenAnswer");
+
+            }
+
+            acceptingAnswers = false;
+            selectedChoice = e.target;
+            selectedAnswer = selectedChoice.dataset['number'];
+
+            selectedChoice.parentElement.classList.add("chosenAnswer");
+
+            submitAnswer.disabled = !selectedChoice;
+
+        });
+        document.body.appendChild(choiceContainer);
+
+    }
+   
+    //!!!!!!!!!!!!!!!1
+
     choices.forEach((choice) => {
         const number = choice.dataset['number'];
         choice.innerText = currentQuestion['choice' + number];
     });
 
-    availableQuesions.splice(questionIndex, 1);
-    acceptingAnswers = true;
+    //availableQuesions.splice(questionIndex, 1);
+    //acceptingAnswers = true;
 
 };
 
@@ -156,10 +191,14 @@ choices.forEach((choice) => {
 });
 
 saveAnawer = (e) => {
+    
     const classToApply = selectedAnswer == currentQuestion.answer ? "correct" : "incorrect";
 
     if (classToApply == "correct") {
         incremenScore(CORRECT_BONUS);
+    }
+    else {
+        decremenScore(CORRECT_BONUS);
     }
     selectedChoice.parentElement.classList.remove("chosenAnswer");
 
@@ -167,8 +206,17 @@ saveAnawer = (e) => {
 
     setTimeout(() => {
         selectedChoice.parentElement.classList.remove(classToApply);
-        getNewQuestion();
+        //let chouceToRemove;
+        //for (let i = 1; i < 5; i++) {
+        //     chouceToRemove = Array.from(getElementById('choiceContainer' + i))  
+        //}
+        //document.body.removeChild(chouceToRemove);
 
+        getNewQuestion();
+                //wheel of fortune her!!!
+       // window.location.assign('/WheelOfFortiune.html'); 
+
+       
     }, 1000);
 
 
@@ -203,8 +251,15 @@ SkipAnawer = (e) => {
 incremenScore = num => {
     score += num;
     scoreText.innerText = score;
+    localStorage.setItem("mostRecentScore", score);
 };
 
+decremenScore = num => {
+    score -= num;
+    scoreText.innerText = score;
+    localStorage.setItem("mostRecentScore", score);
+};
 
+decremenScore
 
 startGame();
