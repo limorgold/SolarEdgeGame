@@ -8,7 +8,7 @@ newScore.innerText = "score: " + score;
 
 function gambelChoice() {
     let gambelChoice = gambelOptions.options[gambelOptions.selectedIndex].text
-    if (score => +gambelChoice) {
+    if (score >= +gambelChoice) {
     choosenGambel.innerText = gambelOptions.options[gambelOptions.selectedIndex].text;
     gambelContinue.disabled = !choosenGambel.innerText;
     }

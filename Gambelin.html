@@ -18,28 +18,31 @@
 </head>
 <body>
     <div class="container">
-        <h1> How Much Would You Like To Bet On Your Success </h1>
-        <p>Click on the button to open the dropdown menu.</p>
-        <p id="colectedScore"></p>
-        <form>
-            <select id="gambelOptions" class="btn" onchange="gambelChoice()">
-                <Option>0</Option>
-                <Option>100</Option>
-                <Option>200</Option>
-                <Option>300</Option>
-                <Option>400</Option>
-                <Option>500</Option>
-                <Option>600</Option>
-            </select>
-            <p> You've chosen to gamble on </p> <p id="choosenGambel" style="color:red"></p>
-        </form>
+        <div class="flex-center flex-column">
 
-        <button type="button" id="gambelContinue" class="btn" onclick="gambelToContinue()" disabled> Continue</button>
+            <h1> How Much Would You Like To Bet On Your Success </h1>
+            <p>Choose the points you'd like to gamble on for your success. <br /> 
+            If you answer the next question correctly, you'll gain the gambled points, but if you fail, you will lose the point.</p>
+            <p id="colectedScore"></p>
+            <form>
+                <select id="gambelOptions" class="btn" onchange="gambelChoice()">
+                    <Option>0</Option>
+                    <Option>100</Option>
+                    <Option>200</Option>
+                    <Option>300</Option>
+                    <Option>400</Option>
+                    <Option>500</Option>
+                    <Option>600</Option>
+                </select>
+                <p> You've chosen to gamble on </p> <p id="choosenGambel" style="color:red"></p>
+            </form>
+
+            <button type="button" id="gambelContinue" class="btn" onclick="gambelToContinue()" disabled> Continue</button>
 
 
+        </div>
     </div>
-
-            <script src="jScripts/Gambeling.js" type="text/javascript"></script>
+        <script src="jScripts/Gambeling.js" type="text/javascript"></script>
 
 </body>
 </html>

@@ -9,32 +9,29 @@
     <meta name="author" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <!-- CSS -->
-    <!--<link href="styles/reset.css" rel="stylesheet" />-->
     <link href="styles/myStyle.css" rel="stylesheet" />
     <link href="styles/WheelOfFortiune.css" rel="stylesheet" />
 
-    <!-- Scripts -->
-  <!----  <script src="jScripts/jquery-1.12.0.min.js"></script> --> 
-   <!--- <script src="jScripts/Game.js" type="text/javascript">  </script> -->
 </head>
 <body>
     <div class="container">
-        <h1> Check your luck</h1>
-        <div id="wheelOfFortune">
-            <div class="arrow"></div>
-            <canvas id="wheel" width="300" height="300"></canvas>
-            <p id="wheelScore"> </p>
+        <div class="flex-center flex-column">
+
+            <h1> Check your luck</h1>
+            <p> Spin the wheel and get your points</p>
+            <div id="wheelOfFortune">
+                <div class="arrow"></div>
+                <canvas id="wheel" width="300" height="300"></canvas>
+                <p id="wheelScore"> </p>
+
+            </div>
+            <button type="button" id="spinBTN" class="btn" onclick="wheelRotate()"> Spin</button>
+            <button type="button" id="Continue" class="btn" onclick="goToGame()" disabled> Continue</button>
 
         </div>
-        <button type="button" id="spinBTN" class="btn" onclick="wheelRotate()"> Spin</button>
-        <button type="button" id="Continue" class="btn" onclick="goToGame()" disabled> Continue</button>
-
-
-
-
     </div>
 
-    <script src="jScripts/WheelOfFortiune.js" type="text/javascript"></script>
+        <script src="jScripts/WheelOfFortiune.js" type="text/javascript"></script>
 
 </body>
 </html>

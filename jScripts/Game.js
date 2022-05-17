@@ -23,6 +23,7 @@ let selectedAnswer;
 let timer = 1;
 let time = timer * 60;
 let choiceContainer;
+let answerCheck = [];
 
 questions = [
 
@@ -32,7 +33,11 @@ questions = [
         choice2: "Liron",
         choice3: "Limon",
         choice4: "Lirom",
-        answer: 1
+        answer: 1,
+        feedback: "my name is Limor",
+        tyep: "multiple",
+        difficulty: 1
+
 
     },
     {
@@ -41,7 +46,10 @@ questions = [
         choice2: "Petah Tikva",
         choice3: "Hadera",
         choice4: "New York",
-        answer: 2
+        answer: 2,
+        feedback: "I live now in Petah Tikva",
+        tyep: "multiple",
+        difficulty: 2
 
     },
     {
@@ -50,7 +58,10 @@ questions = [
         choice2: "Blue",
         choice3: "Purple",
         choice4: "Pink",
-        answer: 3
+        answer: 3,
+        feedback: "my favorite color is purple",
+        tyep: "multiple",
+        difficulty: 3
 
 
     },
@@ -60,7 +71,10 @@ questions = [
         choice2: "Pizza",
         choice3: "Hamburger",
         choice4: "Noodles",
-        answer: 1
+        answer: 1,
+        feedback: "my name is Limor",
+        tyep: "multiple",
+        difficulty: 3
 
 
     },
@@ -70,7 +84,10 @@ questions = [
         choice2: "25",
         choice3: "12",
         choice4: "27",
-        answer: 4
+        answer: 4,
+        feedback: "I am 27 years old",
+        tyep: "multiple",
+        difficulty: 1
     }
 ]
 
@@ -139,7 +156,6 @@ getNewQuestion = () => {
         myChoice.dataset = i;
         myChoice.appendChild(document.createTextNode(currentQuestion['choice' + i]));
         myChoice.addEventListener('click', (e) => {
-            alert(currentQuestion['choice' + i]);
             if (!acceptingAnswers) {
                 selectedChoice.parentElement.classList.remove("chosenAnswer");
 
@@ -201,16 +217,31 @@ saveAnawer = (e) => {
         decremenScore(CORRECT_BONUS);
     }
     selectedChoice.parentElement.classList.remove("chosenAnswer");
-
+    // feedback 
+    const feedbackAns = {
+        question: currentQuestion.question,
+        answers: {
+            answer1: currentQuestion.choice1,
+            answer2: currentQuestion.choice2,
+            answer3: currentQuestion.choice3,
+            answer4: currentQuestion.choice4
+        },
+        correctAns: currentQuestion.answer,
+        feedback: currentQuestion.feedback,
+        isCorrect: classToApply
+    };
+    answerCheck.push(feedbackAns);
+    localStorage.setItem("answerCheck", JSON.stringify(answerCheck));
+ 
     selectedChoice.parentElement.classList.add(classToApply);
 
     setTimeout(() => {
         selectedChoice.parentElement.classList.remove(classToApply);
-        //let chouceToRemove;
+        //let choiceToRemove;
         //for (let i = 1; i < 5; i++) {
-        //     chouceToRemove = Array.from(getElementById('choiceContainer' + i))  
+        //     choiceToRemove = Array.from(getElementById('choiceContainer' + i))  
         //}
-        //document.body.removeChild(chouceToRemove);
+        //document.body.removeChild(choiceToRemove);
 
         getNewQuestion();
                 //wheel of fortune her!!!
