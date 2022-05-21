@@ -36,3 +36,7 @@ div {
     background-color: white;
     overflow: hidden;
 }
+
+.rightAns{
+visibility: hidden;
+}

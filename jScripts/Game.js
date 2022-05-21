@@ -8,6 +8,8 @@ const submitAnswer = document.getElementById('submitAnswer');
 const timerText = document.getElementById('timer');
 const mostRecentScore = +localStorage.getItem("mostRecentScore");
 let gambelAmount = +localStorage.getItem("gambelChoice");
+const SkipAnswer = document.getElementById('SkipAnswer');
+let myDiv = document.getElementById('answersContainer');
 
 scoreText.innerText = mostRecentScore;
 
@@ -37,8 +39,6 @@ questions = [
         feedback: "my name is Limor",
         tyep: "multiple",
         difficulty: 1
-
-
     },
     {
         question: "Where do you live?",
@@ -50,7 +50,6 @@ questions = [
         feedback: "I live now in Petah Tikva",
         tyep: "multiple",
         difficulty: 2
-
     },
     {
         question: "What is your favorite color?",
@@ -62,8 +61,6 @@ questions = [
         feedback: "my favorite color is purple",
         tyep: "multiple",
         difficulty: 3
-
-
     },
     {
         question: "What is your favorite food?",
@@ -75,8 +72,6 @@ questions = [
         feedback: "my name is Limor",
         tyep: "multiple",
         difficulty: 3
-
-
     },
     {
         question: "How old are you?",
@@ -97,14 +92,11 @@ let QuestionNum = [...questions];
 const MAX_QUESTIONS = QuestionNum.length;
 
 startGame = () => {
-   
         questionCounter = 0;
         availableQuesions = [...questions];
         getNewQuestion();
-        stertTimer();
-   
+        stertTimer();  
 };
-
 
 stertTimer = () => {
     setTimeout(() => {
@@ -117,97 +109,66 @@ stertTimer = () => {
             if (sec <= 2) {
                 localStorage.setItem("mostRecentScore", score);
                 return window.location.assign('/end.html');
-            }
-            
+            }   
         }
         stertTimer();
     }, 1000);
-
 }
 
-
 getNewQuestion = () => {
-    if (availableQuesions.length === 0 || questionCounter >= MAX_QUESTIONS) {
-        localStorage.setItem("mostRecentScore", score);
-        //go to the end page
-        return window.location.assign('/end.html');
+    if (availableQuesions.length == 0) {
+        availableQuesions = skippedAnswers;
+        SkipAnswer.disabled = true;
+        if (questionCounter == MAX_QUESTIONS) {
+            localStorage.setItem("mostRecentScore", score);
+            //go to the end page
+            return window.location.assign('/end.html');
+        }
     }
-
-    questionCounter++;
 
     progressText.innerText = "Question " + questionCounter + "/" + MAX_QUESTIONS;
 
     // random
     const questionIndex = Math.floor(Math.random() * availableQuesions.length);
     currentQuestion = availableQuesions[questionIndex];
+
     question.innerText = currentQuestion.question;
 
     availableQuesions.splice(questionIndex, 1);
     acceptingAnswers = true;
 
-    //!!!!!!!!!!!!!!!1
+    //creat answers
     for (let i = 1; i < 5; i++) {
     
-         choiceContainer = document.createElement(`div`);
+        choiceContainer = document.createElement(`div`);
         choiceContainer.className = 'choiceContainer';
         choiceContainer.id = 'choiceContainer'+i;
         const myChoice = choiceContainer.appendChild(document.createElement(`p`));
         myChoice.className = `choice-text`;
         myChoice.dataset = i;
         myChoice.appendChild(document.createTextNode(currentQuestion['choice' + i]));
+        myDiv.appendChild(choiceContainer);
+
         myChoice.addEventListener('click', (e) => {
             if (!acceptingAnswers) {
                 selectedChoice.parentElement.classList.remove("chosenAnswer");
-
             }
 
             acceptingAnswers = false;
             selectedChoice = e.target;
-            selectedAnswer = selectedChoice.dataset['number'];
+            selectedAnswer = i;
 
             selectedChoice.parentElement.classList.add("chosenAnswer");
-
             submitAnswer.disabled = !selectedChoice;
-
         });
-        document.body.appendChild(choiceContainer);
-
-    }
-   
-    //!!!!!!!!!!!!!!!1
-
-    choices.forEach((choice) => {
-        const number = choice.dataset['number'];
-        choice.innerText = currentQuestion['choice' + number];
-    });
-
-    //availableQuesions.splice(questionIndex, 1);
-    //acceptingAnswers = true;
-
+    } 
 };
 
-choices.forEach((choice) => {
-    choice.addEventListener('click', (e) => {
-
-        if (!acceptingAnswers) {
-            selectedChoice.parentElement.classList.remove("chosenAnswer");
-
-        }
-
-        acceptingAnswers = false;
-         selectedChoice = e.target;
-        selectedAnswer = selectedChoice.dataset['number'];
-
-        selectedChoice.parentElement.classList.add("chosenAnswer");
-
-        submitAnswer.disabled = !selectedChoice;
-
-        
-    });
-});
-
 saveAnawer = (e) => {
-    
+
+    questionCounter++;
+
+    submitAnswer.disabled = true;
     const classToApply = selectedAnswer == currentQuestion.answer ? "correct" : "incorrect";
 
     if (classToApply == "correct") {
@@ -217,7 +178,8 @@ saveAnawer = (e) => {
         decremenScore(CORRECT_BONUS);
     }
     selectedChoice.parentElement.classList.remove("chosenAnswer");
-    // feedback 
+
+    // feedback
     const feedbackAns = {
         question: currentQuestion.question,
         answers: {
@@ -228,7 +190,8 @@ saveAnawer = (e) => {
         },
         correctAns: currentQuestion.answer,
         feedback: currentQuestion.feedback,
-        isCorrect: classToApply
+        isCorrect: classToApply,
+        selectedAnswer: selectedAnswer
     };
     answerCheck.push(feedbackAns);
     localStorage.setItem("answerCheck", JSON.stringify(answerCheck));
@@ -237,17 +200,13 @@ saveAnawer = (e) => {
 
     setTimeout(() => {
         selectedChoice.parentElement.classList.remove(classToApply);
-        //let choiceToRemove;
-        //for (let i = 1; i < 5; i++) {
-        //     choiceToRemove = Array.from(getElementById('choiceContainer' + i))  
-        //}
-        //document.body.removeChild(choiceToRemove);
-
+        for (let i = 1; i < 5; i++) {
+            const answersToRemove = document.getElementById('choiceContainer' + i);
+            myDiv.removeChild(answersToRemove);
+        }
         getNewQuestion();
                 //wheel of fortune her!!!
        // window.location.assign('/WheelOfFortiune.html'); 
-
-       
     }, 1000);
 
 
@@ -255,28 +214,15 @@ saveAnawer = (e) => {
     // update the progress bar
     progressBarFull.style.width = `${(questionCounter / MAX_QUESTIONS) * 100}%`;
 
-
 }
 
 SkipAnawer = (e) => {
 
-    //skippedAnswers += [...currentQuestion];
+    skippedAnswers[skippedCount] = currentQuestion; 
+    skippedCount++;
+    selectedChoice.parentElement.classList.remove("chosenAnswer");
 
-    //skippedAnswers[skippedCount][0] += currentQuestion.question;
-    //skippedAnswers[skippedCount][1] += currentQuestion.answer;
-
-    //skippedCount++;
-
-    //choices.forEach((choice) => {
-    //    const number = choice.dataset['number'];
-    //    choice.innerText = currentQuestion['choice' + number];
-    //});
-
-
-   console.log(skippedAnswers);
-  
     getNewQuestion();
-
 }
 
 incremenScore = num => {
