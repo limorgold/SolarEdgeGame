@@ -9,7 +9,8 @@ newScore.innerText = "score: " + score;
 function gambelChoice() {
     let gambelChoice = gambelOptions.options[gambelOptions.selectedIndex].text
     if (score >= +gambelChoice) {
-    choosenGambel.innerText = gambelOptions.options[gambelOptions.selectedIndex].text;
+        choosenGambel.innerText = gambelOptions.options[gambelOptions.selectedIndex].text;
+        gambelContinue.disabled = false;
     }
     else {
         choosenGambel.innerText = "not enough points";

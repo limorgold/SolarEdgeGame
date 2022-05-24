@@ -19,6 +19,8 @@ StartTheGame = (e) => {
         window.location.href = "OpeningPage.html";
         localStorage.setItem("userName", JSON.stringify(employeeName.value));
         localStorage.setItem("mostRecentScore", 0);
+        localStorage.setItem("gameStarted", 1);
+        localStorage.setItem("timeLeft", 60);
     }
     else {
         ErrorHelp.innerText = "Plese enter your full name and Email";

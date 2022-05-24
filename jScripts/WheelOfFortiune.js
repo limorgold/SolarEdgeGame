@@ -1,11 +1,11 @@
 ﻿const sectors = [
     { color: "#4AEC96", label: 700 },
-    { color: "#FF6E1F", label: 200 },
-    { color: "#EDF8FE", label: 100 },
+    { color: "#FF6E1F", label: 100 },
+    { color: "#EDF8FE", label: 200 },
     { color: "#FF3130", label: 400 },
     { color: "#4AEC96", label: 700 },
-    { color: "#FF6E1F", label: 200 },
-    { color: "#EDF8FE", label: 100 },
+    { color: "#FF6E1F", label: 100 },
+    { color: "#EDF8FE", label: 200 },
     { color: "#FF3130", label: 400 },
 ];
 
@@ -61,8 +61,9 @@ function frame() {
     if (angVel < 0.002) {
         angVel = 0; // Bring to stop
         const sector = sectors[getIndex()];
+        //score += sector.label;
+        wheelScore.innerText += "Score: " + sector.label;
         score += sector.label;
-        wheelScore.innerText += "Score: " + score ;
         Continue.disabled = false;
         spinBTN.disabled = true;
 

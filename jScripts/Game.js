@@ -1,4 +1,4 @@
-﻿
+﻿let firstStart = +localStorage.getItem("gameStarted");
 const question = document.getElementById('question');
 const choices = Array.from(document.getElementsByClassName('choice-text'));
 const progressText = document.getElementById('progressText');
@@ -16,14 +16,14 @@ scoreText.innerText = mostRecentScore;
 let currentQuestion = {};
 let acceptingAnswers = false;
 let score = mostRecentScore;
-let questionCounter = 0;
+let questionCounter;
 let availableQuesions = [];
 let skippedAnswers = [];
-let skippedCount = 0;
+let skippedCount;
 let selectedChoice;
 let selectedAnswer;
-let timer = 1;
-let time = timer * 60;
+let time;
+let newTime;
 let choiceContainer;
 let answerCheck = [];
 
@@ -91,11 +91,13 @@ const CORRECT_BONUS = gambelAmount;
 let QuestionNum = [...questions];
 const MAX_QUESTIONS = QuestionNum.length;
 
+
 startGame = () => {
         questionCounter = 0;
-        availableQuesions = [...questions];
-        getNewQuestion();
-        stertTimer();  
+    availableQuesions = [...questions];
+    localStorage.setItem("availableQuesions", JSON.stringify(availableQuesions));
+    stertTimer();
+    getNewQuestion();
 };
 
 stertTimer = () => {
@@ -104,7 +106,6 @@ stertTimer = () => {
         let sec = time % 60;
         timerText.innerText = (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec);
         time--;
-
         if (min == 0) {
             if (sec <= 2) {
                 localStorage.setItem("mostRecentScore", score);
@@ -116,16 +117,9 @@ stertTimer = () => {
 }
 
 getNewQuestion = () => {
-    if (availableQuesions.length == 0) {
-        availableQuesions = skippedAnswers;
-        SkipAnswer.disabled = true;
-        if (questionCounter == MAX_QUESTIONS) {
-            localStorage.setItem("mostRecentScore", score);
-            //go to the end page
-            return window.location.assign('/end.html');
-        }
-    }
-
+    questionCounter = +localStorage.getItem("questionCounter");
+    availableQuesions = JSON.parse(localStorage.getItem("availableQuesions"));
+   
     progressText.innerText = "Question " + questionCounter + "/" + MAX_QUESTIONS;
 
     // random
@@ -135,6 +129,8 @@ getNewQuestion = () => {
     question.innerText = currentQuestion.question;
 
     availableQuesions.splice(questionIndex, 1);
+    localStorage.setItem("availableQuesions", JSON.stringify(availableQuesions));
+
     acceptingAnswers = true;
 
     //creat answers
@@ -165,8 +161,10 @@ getNewQuestion = () => {
 };
 
 saveAnawer = (e) => {
-
+    newTime = time;
+    localStorage.setItem("timeLeft", newTime);
     questionCounter++;
+    localStorage.setItem("questionCounter", questionCounter);
 
     submitAnswer.disabled = true;
     const classToApply = selectedAnswer == currentQuestion.answer ? "correct" : "incorrect";
@@ -197,23 +195,28 @@ saveAnawer = (e) => {
     localStorage.setItem("answerCheck", JSON.stringify(answerCheck));
  
     selectedChoice.parentElement.classList.add(classToApply);
-
+ 
     setTimeout(() => {
         selectedChoice.parentElement.classList.remove(classToApply);
         for (let i = 1; i < 5; i++) {
             const answersToRemove = document.getElementById('choiceContainer' + i);
             myDiv.removeChild(answersToRemove);
         }
-        getNewQuestion();
-                //wheel of fortune her!!!
-       // window.location.assign('/WheelOfFortiune.html'); 
+
+        if (availableQuesions.length == 0) {
+            availableQuesions = skippedAnswers;
+            SkipAnswer.disabled = true;
+            if (questionCounter == MAX_QUESTIONS) {
+                localStorage.setItem("mostRecentScore", score);
+                //go to the end page
+                return window.location.assign('/end.html');
+            }
+        }
+        window.location.assign('/WheelOfFortiune.html'); 
     }, 1000);
-
-
-
     // update the progress bar
     progressBarFull.style.width = `${(questionCounter / MAX_QUESTIONS) * 100}%`;
-
+        
 }
 
 SkipAnawer = (e) => {
@@ -237,6 +240,21 @@ decremenScore = num => {
     localStorage.setItem("mostRecentScore", score);
 };
 
-decremenScore
+if (firstStart == 1) {
+    questionCounter = 0;
+    localStorage.setItem("questionCounter", questionCounter);
+    skippedCount = 0;
+    time = +localStorage.getItem("timeLeft");
+    startGame();
+    localStorage.setItem("gameStarted", 0);
+    firstStart = +localStorage.getItem("gameStarted");
+} else {
+    getNewQuestion();
+    time = +localStorage.getItem("timeLeft");
+    questionCounter = +localStorage.getItem("questionCounter");
+    progressText.innerText = "Question " + questionCounter + "/" + MAX_QUESTIONS;
+    progressBarFull.style.width = `${(questionCounter / MAX_QUESTIONS) * 100}%`;
 
-startGame();
+    stertTimer();
+}
+
