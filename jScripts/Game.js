@@ -61,29 +61,29 @@ questions = [
         feedback: "my favorite color is purple",
         tyep: "multiple",
         difficulty: 3
-    },
-    {
-        question: "What is your favorite food?",
-        choice1: "Sushi",
-        choice2: "Pizza",
-        choice3: "Hamburger",
-        choice4: "Noodles",
-        answer: 1,
-        feedback: "my name is Limor",
-        tyep: "multiple",
-        difficulty: 3
-    },
-    {
-        question: "How old are you?",
-        choice1: "100",
-        choice2: "25",
-        choice3: "12",
-        choice4: "27",
-        answer: 4,
-        feedback: "I am 27 years old",
-        tyep: "multiple",
-        difficulty: 1
     }
+    //{
+    //    question: "What is your favorite food?",
+    //    choice1: "Sushi",
+    //    choice2: "Pizza",
+    //    choice3: "Hamburger",
+    //    choice4: "Noodles",
+    //    answer: 1,
+    //    feedback: "I can eat sushi all day every day",
+    //    tyep: "multiple",
+    //    difficulty: 3
+    //},
+    //{
+    //    question: "How old are you?",
+    //    choice1: "100",
+    //    choice2: "25",
+    //    choice3: "12",
+    //    choice4: "27",
+    //    answer: 4,
+    //    feedback: "I am 27 years old",
+    //    tyep: "multiple",
+    //    difficulty: 1
+    //}
 ]
 
 //CONSTANTS
@@ -96,11 +96,11 @@ startGame = () => {
         questionCounter = 0;
     availableQuesions = [...questions];
     localStorage.setItem("availableQuesions", JSON.stringify(availableQuesions));
-    stertTimer();
+    startTimer();
     getNewQuestion();
 };
 
-stertTimer = () => {
+startTimer = () => {
     setTimeout(() => {
         const min = Math.floor(time / 60);
         let sec = time % 60;
@@ -112,25 +112,31 @@ stertTimer = () => {
                 return window.location.assign('/end.html');
             }   
         }
-        stertTimer();
+        startTimer();
     }, 1000);
 }
 
 getNewQuestion = () => {
     questionCounter = +localStorage.getItem("questionCounter");
     availableQuesions = JSON.parse(localStorage.getItem("availableQuesions"));
-   
+    checkQuestions();
     progressText.innerText = "Question " + questionCounter + "/" + MAX_QUESTIONS;
 
-    // random
-    const questionIndex = Math.floor(Math.random() * availableQuesions.length);
-    currentQuestion = availableQuesions[questionIndex];
-
+    let questionIndex;
+    if (SkipAnswer.disabled != true) {
+        // random
+         questionIndex = Math.floor(Math.random() * availableQuesions.length);
+        currentQuestion = availableQuesions[questionIndex];
+    }
+    else {
+        skippedCount = +localStorage.getItem("skippedCount");
+        currentQuestion = availableQuesions[skippedCount - 1];
+        alert("skipp num "+ skippedCount);
+        skippedCount--;
+        localStorage.setItem("skippedCount", skippedCount);
+        SkipAnswer.disabled = true
+    }
     question.innerText = currentQuestion.question;
-
-    availableQuesions.splice(questionIndex, 1);
-    localStorage.setItem("availableQuesions", JSON.stringify(availableQuesions));
-
     acceptingAnswers = true;
 
     //creat answers
@@ -157,8 +163,10 @@ getNewQuestion = () => {
             selectedChoice.parentElement.classList.add("chosenAnswer");
             submitAnswer.disabled = !selectedChoice;
         });
-    } 
-};
+    }
+    availableQuesions.splice(questionIndex, 1);
+    localStorage.setItem("availableQuesions", JSON.stringify(availableQuesions));
+  };
 
 saveAnawer = (e) => {
     newTime = time;
@@ -198,34 +206,52 @@ saveAnawer = (e) => {
  
     setTimeout(() => {
         selectedChoice.parentElement.classList.remove(classToApply);
-        for (let i = 1; i < 5; i++) {
-            const answersToRemove = document.getElementById('choiceContainer' + i);
-            myDiv.removeChild(answersToRemove);
+        removeAns();
+        checkQuestions();
+        if (questionCounter == MAX_QUESTIONS) {
+            localStorage.setItem("mostRecentScore", score);
+            return window.location.assign('/end.html');
         }
+        else {
+            window.location.assign('/WheelOfFortiune.html');
 
-        if (availableQuesions.length == 0) {
-            availableQuesions = skippedAnswers;
-            SkipAnswer.disabled = true;
-            if (questionCounter == MAX_QUESTIONS) {
-                localStorage.setItem("mostRecentScore", score);
-                //go to the end page
-                return window.location.assign('/end.html');
-            }
         }
-        window.location.assign('/WheelOfFortiune.html'); 
     }, 1000);
+
     // update the progress bar
     progressBarFull.style.width = `${(questionCounter / MAX_QUESTIONS) * 100}%`;
         
 }
 
-SkipAnawer = (e) => {
+removeAns = () => {
+    for (let i = 1; i < 5; i++) {
+        const answersToRemove = document.getElementById('choiceContainer' + i);
+        myDiv.removeChild(answersToRemove);
+    }
+}
 
-    skippedAnswers[skippedCount] = currentQuestion; 
+checkQuestions = () => {
+    if (availableQuesions.length == 0) {
+        skippedAnswers = JSON.parse(localStorage.getItem("skippedAnswers"));
+        availableQuesions = skippedAnswers;
+        SkipAnswer.disabled === true;
+
+        //if (questionCounter == MAX_QUESTIONS) {
+        //    localStorage.setItem("mostRecentScore", score);
+        //    return window.location.assign('/end.html');
+        //}
+    }
+}
+SkipAnawer = () => {
+    skippedAnswers[skippedCount] = currentQuestion;
+    localStorage.setItem("skippedAnswers", JSON.stringify(skippedAnswers));
     skippedCount++;
-    selectedChoice.parentElement.classList.remove("chosenAnswer");
+    alert(skippedCount);
+    localStorage.setItem("skippedCount", skippedCount);
 
-    getNewQuestion();
+    selectedChoice.parentElement.classList.remove("chosenAnswer");
+    removeAns();
+    window.location.assign('/WheelOfFortiune.html');
 }
 
 incremenScore = num => {
@@ -244,17 +270,22 @@ if (firstStart == 1) {
     questionCounter = 0;
     localStorage.setItem("questionCounter", questionCounter);
     skippedCount = 0;
+    localStorage.setItem("skippedCount", skippedCount);
+    skippedAnswers = [];
+    localStorage.setItem("skippedAnswers", skippedAnswers);
     time = +localStorage.getItem("timeLeft");
     startGame();
     localStorage.setItem("gameStarted", 0);
     firstStart = +localStorage.getItem("gameStarted");
+
 } else {
     getNewQuestion();
     time = +localStorage.getItem("timeLeft");
     questionCounter = +localStorage.getItem("questionCounter");
     progressText.innerText = "Question " + questionCounter + "/" + MAX_QUESTIONS;
     progressBarFull.style.width = `${(questionCounter / MAX_QUESTIONS) * 100}%`;
-
-    stertTimer();
+    skippedCount = +localStorage.getItem("skippedCount");
+    skippedAnswers = JSON.parse(localStorage.getItem("skippedAnswers"));
+    startTimer();
 }
 

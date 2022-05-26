@@ -33,7 +33,7 @@ for (i = 0; i < questions.length; i++) {
     });
 }
 
-const isCorrect = document.getElementsByClassName("rightAns");
+//const isCorrect = document.getElementsByClassName("rightAns");
 //answerCheck.innerText = isCorrect;
 
 //const isIncorrect = document.getElementsByClassName("incorrect");
