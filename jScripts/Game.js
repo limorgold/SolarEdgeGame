@@ -28,7 +28,6 @@ let choiceContainer;
 let answerCheck = [];
 
 questions = [
-
     {
         question: "What is your name?",
         choice1: "Limor",
@@ -125,7 +124,7 @@ getNewQuestion = () => {
     let questionIndex;
     if (SkipAnswer.disabled != true) {
         // random
-         questionIndex = Math.floor(Math.random() * availableQuesions.length);
+        questionIndex = Math.floor(Math.random() * availableQuesions.length);
         currentQuestion = availableQuesions[questionIndex];
     }
     else {
@@ -141,7 +140,6 @@ getNewQuestion = () => {
 
     //creat answers
     for (let i = 1; i < 5; i++) {
-    
         choiceContainer = document.createElement(`div`);
         choiceContainer.className = 'choiceContainer';
         choiceContainer.id = 'choiceContainer'+i;
@@ -235,13 +233,9 @@ checkQuestions = () => {
         skippedAnswers = JSON.parse(localStorage.getItem("skippedAnswers"));
         availableQuesions = skippedAnswers;
         SkipAnswer.disabled === true;
-
-        //if (questionCounter == MAX_QUESTIONS) {
-        //    localStorage.setItem("mostRecentScore", score);
-        //    return window.location.assign('/end.html');
-        //}
     }
 }
+
 SkipAnawer = () => {
     skippedAnswers[skippedCount] = currentQuestion;
     localStorage.setItem("skippedAnswers", JSON.stringify(skippedAnswers));
@@ -286,6 +280,7 @@ if (firstStart == 1) {
     progressBarFull.style.width = `${(questionCounter / MAX_QUESTIONS) * 100}%`;
     skippedCount = +localStorage.getItem("skippedCount");
     skippedAnswers = JSON.parse(localStorage.getItem("skippedAnswers"));
+    answerCheck = JSON.parse(localStorage.getItem("answerCheck"))
     startTimer();
 }
 
