@@ -60,18 +60,18 @@ questions = [
         feedback: "my favorite color is purple",
         tyep: "multiple",
         difficulty: 3
+    },
+    {
+        question: "What is your favorite food?",
+        choice1: "Sushi",
+        choice2: "Pizza",
+        choice3: "Hamburger",
+        choice4: "Noodles",
+        answer: 1,
+        feedback: "I can eat sushi all day every day",
+        tyep: "multiple",
+        difficulty: 3
     }
-    //{
-    //    question: "What is your favorite food?",
-    //    choice1: "Sushi",
-    //    choice2: "Pizza",
-    //    choice3: "Hamburger",
-    //    choice4: "Noodles",
-    //    answer: 1,
-    //    feedback: "I can eat sushi all day every day",
-    //    tyep: "multiple",
-    //    difficulty: 3
-    //},
     //{
     //    question: "How old are you?",
     //    choice1: "100",
@@ -92,7 +92,7 @@ const MAX_QUESTIONS = QuestionNum.length;
 
 
 startGame = () => {
-        questionCounter = 0;
+    questionCounter = 0;
     availableQuesions = [...questions];
     localStorage.setItem("availableQuesions", JSON.stringify(availableQuesions));
     startTimer();
@@ -107,7 +107,22 @@ startTimer = () => {
         time--;
         if (min == 0) {
             if (sec <= 2) {
+                const classToApply = "incorrect";
+                endFeedback(classToApply);
+                questionCounter++;
                 localStorage.setItem("mostRecentScore", score);
+                for (let i = 0; i < availableQuesions.length; i++) {
+                    currentQuestion = availableQuesions[i]
+                    const classToApply = "incorrect";
+                    endFeedback(classToApply);
+                }
+                if (skippedCount > 0) {
+                    for (let i = 0; i < skippedCount; i++) {
+                        currentQuestion = skippedAnswers[i];
+                        const classToApply = "incorrect";
+                        endFeedback(classToApply);
+                    }
+                }
                 return window.location.assign('/end.html');
             }   
         }
@@ -118,7 +133,8 @@ startTimer = () => {
 getNewQuestion = () => {
     questionCounter = +localStorage.getItem("questionCounter");
     availableQuesions = JSON.parse(localStorage.getItem("availableQuesions"));
-    checkQuestions();
+    checkSkip();
+    
     progressText.innerText = "Question " + questionCounter + "/" + MAX_QUESTIONS;
 
     let questionIndex;
@@ -130,7 +146,6 @@ getNewQuestion = () => {
     else {
         skippedCount = +localStorage.getItem("skippedCount");
         currentQuestion = availableQuesions[skippedCount - 1];
-        alert("skipp num "+ skippedCount);
         skippedCount--;
         localStorage.setItem("skippedCount", skippedCount);
         SkipAnswer.disabled = true
@@ -169,8 +184,8 @@ getNewQuestion = () => {
 saveAnawer = (e) => {
     newTime = time;
     localStorage.setItem("timeLeft", newTime);
-    questionCounter++;
-    localStorage.setItem("questionCounter", questionCounter);
+    //questionCounter++;
+    //localStorage.setItem("questionCounter", questionCounter);
 
     submitAnswer.disabled = true;
     const classToApply = selectedAnswer == currentQuestion.answer ? "correct" : "incorrect";
@@ -183,29 +198,16 @@ saveAnawer = (e) => {
     }
     selectedChoice.parentElement.classList.remove("chosenAnswer");
 
-    // feedback
-    const feedbackAns = {
-        question: currentQuestion.question,
-        answers: {
-            answer1: currentQuestion.choice1,
-            answer2: currentQuestion.choice2,
-            answer3: currentQuestion.choice3,
-            answer4: currentQuestion.choice4
-        },
-        correctAns: currentQuestion.answer,
-        feedback: currentQuestion.feedback,
-        isCorrect: classToApply,
-        selectedAnswer: selectedAnswer
-    };
-    answerCheck.push(feedbackAns);
-    localStorage.setItem("answerCheck", JSON.stringify(answerCheck));
- 
+    endFeedback(classToApply);
+    questionCounter++;
+    localStorage.setItem("questionCounter", questionCounter);
+
     selectedChoice.parentElement.classList.add(classToApply);
  
     setTimeout(() => {
         selectedChoice.parentElement.classList.remove(classToApply);
         removeAns();
-        checkQuestions();
+
         if (questionCounter == MAX_QUESTIONS) {
             localStorage.setItem("mostRecentScore", score);
             return window.location.assign('/end.html');
@@ -228,7 +230,7 @@ removeAns = () => {
     }
 }
 
-checkQuestions = () => {
+checkSkip = () => {
     if (availableQuesions.length == 0) {
         skippedAnswers = JSON.parse(localStorage.getItem("skippedAnswers"));
         availableQuesions = skippedAnswers;
@@ -240,12 +242,30 @@ SkipAnawer = () => {
     skippedAnswers[skippedCount] = currentQuestion;
     localStorage.setItem("skippedAnswers", JSON.stringify(skippedAnswers));
     skippedCount++;
-    alert(skippedCount);
     localStorage.setItem("skippedCount", skippedCount);
-
-    selectedChoice.parentElement.classList.remove("chosenAnswer");
     removeAns();
     window.location.assign('/WheelOfFortiune.html');
+}
+
+endFeedback = (classToApply) => {
+    if (questionCounter > 0) {
+        answerCheck = JSON.parse(localStorage.getItem("answerCheck"));
+    }
+    const feedbackAns = {
+        question: currentQuestion.question,
+        answers: {
+            answer1: currentQuestion.choice1,
+            answer2: currentQuestion.choice2,
+            answer3: currentQuestion.choice3,
+            answer4: currentQuestion.choice4
+        },
+        correctAns: currentQuestion.answer,
+        feedback: currentQuestion.feedback,
+        isCorrect: classToApply,
+        selectedAnswer: selectedAnswer
+    };
+    answerCheck.push(feedbackAns);
+    localStorage.setItem("answerCheck", JSON.stringify(answerCheck));
 }
 
 incremenScore = num => {
@@ -267,20 +287,20 @@ if (firstStart == 1) {
     localStorage.setItem("skippedCount", skippedCount);
     skippedAnswers = [];
     localStorage.setItem("skippedAnswers", skippedAnswers);
+    answerCheck = [];
+    localStorage.setItem("answerCheck", answerCheck);
     time = +localStorage.getItem("timeLeft");
     startGame();
-    localStorage.setItem("gameStarted", 0);
-    firstStart = +localStorage.getItem("gameStarted");
-
-} else {
-    getNewQuestion();
+    localStorage.setItem("gameStarted", 2);
+}
+else {
     time = +localStorage.getItem("timeLeft");
+    startTimer();
+    getNewQuestion();
     questionCounter = +localStorage.getItem("questionCounter");
     progressText.innerText = "Question " + questionCounter + "/" + MAX_QUESTIONS;
     progressBarFull.style.width = `${(questionCounter / MAX_QUESTIONS) * 100}%`;
     skippedCount = +localStorage.getItem("skippedCount");
     skippedAnswers = JSON.parse(localStorage.getItem("skippedAnswers"));
-    answerCheck = JSON.parse(localStorage.getItem("answerCheck"))
-    startTimer();
+    answerCheck = JSON.parse(localStorage.getItem("answerCheck"));
 }
-
