@@ -5,16 +5,22 @@ answerCheckTxt.innerHTML = answerCheck
     .map(feedbackAns => {
 
         return `<div class="${feedbackAns.isCorrect} ">
-                <div class="accordion">${feedbackAns.question}</div>
+                <div class="accordion">${feedbackAns.currentQuestion.question}
+                 <img src="${feedbackAns.currentQuestion.QuestionPic}" style="width:80px" />
+                </div>
                 <div class="panel">
-                <div>${feedbackAns.feedback}</div>
-                <div>${feedbackAns.answers.answer1}</div>
-                <div>${feedbackAns.answers.answer2}</div>
-                <div>${feedbackAns.answers.answer3}</div>
-                <div>${feedbackAns.answers.answer4}</div>
-                <span class="rightAns">${feedbackAns.correctAns}</span>
+                <div>${feedbackAns.currentQuestion.feedback}</div>
+                <img src="${feedbackAns.currentQuestion.choiceImg1}" style="width:80px" />
+                <div>${feedbackAns.currentQuestion.choice1}</div>
+                <img src="${feedbackAns.currentQuestion.choiceImg2}" style="width:80px" />
+                <div>${feedbackAns.currentQuestion.choice2}</div>
+                <img src="${feedbackAns.currentQuestion.choiceImg3}" style="width:80px" />
+                <div>${feedbackAns.currentQuestion.choice3}</div>
+                <img src="${feedbackAns.currentQuestion.choiceImg4}" style="width:80px" />
+                <div>${feedbackAns.currentQuestion.choice4}</div>
+                <span class="rightAns">${feedbackAns.currentQuestion.answer}</span>
                 <span class="rightAns">${feedbackAns.selectedAnswer}</span>
-                </div> </div>`; 
+                </div> </div>`;
     })
     .join("");
 

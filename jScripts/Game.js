@@ -10,6 +10,7 @@ const mostRecentScore = +localStorage.getItem("mostRecentScore");
 let gambelAmount = +localStorage.getItem("gambelChoice");
 const SkipAnswer = document.getElementById('SkipAnswer');
 let myDiv = document.getElementById('answersContainer');
+const QuestionPicDiv = document.getElementById("QuestionPic");
 
 scoreText.innerText = mostRecentScore;
 
@@ -26,14 +27,20 @@ let time;
 let newTime;
 let choiceContainer;
 let answerCheck = [];
+let QuestionPic;
 
 questions = [
     {
         question: "What is your name?",
+        QuestionPic: "",
         choice1: "Limor",
+        choiceImg1: "",
         choice2: "Liron",
+        choiceImg2: "",
         choice3: "Limon",
+        choiceImg3: "",
         choice4: "Lirom",
+        choiceImg4: "",
         answer: 1,
         feedback: "my name is Limor",
         tyep: "multiple",
@@ -41,37 +48,47 @@ questions = [
     },
     {
         question: "Where do you live?",
+        QuestionPic: "",
         choice1: "Arad",
+        choiceImg1: "",
         choice2: "Petah Tikva",
+        choiceImg2: "",
         choice3: "Hadera",
+        choiceImg3: "",
         choice4: "New York",
+        choiceImg4: "",
         answer: 2,
         feedback: "I live now in Petah Tikva",
         tyep: "multiple",
         difficulty: 2
     },
     {
-        question: "What is your favorite color?",
-        choice1: "Red",
-        choice2: "Blue",
-        choice3: "Purple",
-        choice4: "Pink",
-        answer: 3,
-        feedback: "my favorite color is purple",
-        tyep: "multiple",
-        difficulty: 3
-    },
-    {
         question: "What is your favorite food?",
-        choice1: "Sushi",
-        choice2: "Pizza",
+        QuestionPic: "/Imeg/food.jpg",
+        choice1: "",
+        choiceImg1: "/Imeg/sushi.jpg",
+        choice2: "",
+        choiceImg2: "/Imeg/pizza.jpg",
         choice3: "Hamburger",
+        choiceImg3: "",
         choice4: "Noodles",
+        choiceImg4: "",
         answer: 1,
         feedback: "I can eat sushi all day every day",
         tyep: "multiple",
         difficulty: 3
-    }
+     }
+    //{
+    //    question: "What is your favorite color?",
+    //    choice1: "Red",
+    //    choice2: "Blue",
+    //    choice3: "Purple",
+    //    choice4: "Pink",
+    //    answer: 3,
+    //    feedback: "my favorite color is purple",
+    //    tyep: "multiple",
+    //    difficulty: 3
+    //},
     //{
     //    question: "How old are you?",
     //    choice1: "100",
@@ -151,6 +168,12 @@ getNewQuestion = () => {
         SkipAnswer.disabled = true
     }
     question.innerText = currentQuestion.question;
+    if (currentQuestion.QuestionPic != "") {
+        QuestionPic = document.createElement("img");
+        QuestionPic.src = currentQuestion.QuestionPic;
+        QuestionPic.setAttribute("style", "width:150px")
+        QuestionPicDiv.appendChild(QuestionPic);
+    }
     acceptingAnswers = true;
 
     //creat answers
@@ -161,7 +184,16 @@ getNewQuestion = () => {
         const myChoice = choiceContainer.appendChild(document.createElement(`p`));
         myChoice.className = `choice-text`;
         myChoice.dataset = i;
-        myChoice.appendChild(document.createTextNode(currentQuestion['choice' + i]));
+        if (currentQuestion['choice' + i] == "") {
+
+            const choiceImg = document.createElement("img");
+            choiceImg.src = currentQuestion['choiceImg' + i];
+            choiceImg.setAttribute("style", "width:150px");
+            myChoice.appendChild(choiceImg);
+        }
+        else {
+            myChoice.appendChild(document.createTextNode(currentQuestion['choice' + i]));
+        }
         myDiv.appendChild(choiceContainer);
 
         myChoice.addEventListener('click', (e) => {
@@ -184,9 +216,7 @@ getNewQuestion = () => {
 saveAnawer = (e) => {
     newTime = time;
     localStorage.setItem("timeLeft", newTime);
-    //questionCounter++;
-    //localStorage.setItem("questionCounter", questionCounter);
-
+    
     submitAnswer.disabled = true;
     const classToApply = selectedAnswer == currentQuestion.answer ? "correct" : "incorrect";
 
@@ -252,18 +282,10 @@ endFeedback = (classToApply) => {
         answerCheck = JSON.parse(localStorage.getItem("answerCheck"));
     }
     const feedbackAns = {
-        question: currentQuestion.question,
-        answers: {
-            answer1: currentQuestion.choice1,
-            answer2: currentQuestion.choice2,
-            answer3: currentQuestion.choice3,
-            answer4: currentQuestion.choice4
-        },
-        correctAns: currentQuestion.answer,
-        feedback: currentQuestion.feedback,
+        currentQuestion,
         isCorrect: classToApply,
         selectedAnswer: selectedAnswer
-    };
+    }
     answerCheck.push(feedbackAns);
     localStorage.setItem("answerCheck", JSON.stringify(answerCheck));
 }
