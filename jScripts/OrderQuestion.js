@@ -1,29 +1,55 @@
 ﻿const draggable_list = document.getElementById('draggable-list');
-const check = document.getElementById('check');
+const submitAnswer = document.getElementById('checkAnswer');
+const orderQuestion = document.getElementById('orderQuestion');
 
-const richestPeople = [
-    'Jeff Bezos',
-    'Bill Gates',
-    'Warren Buffett',
-    'Bernard Arnault',
-    'Carlos Slim Helu',
-    'Amancio Ortega',
-    'Larry Ellison',
-    'Mark Zuckerberg',
-    'Michael Bloomberg',
-    'Larry Page'
+let availableQuesions = [];
+let correntQuestion = {};
+let questionCount = 0;
+const questions = [
+    {
+        question: "Sort the list of names so the richest person is on top",
+        QuestionPic: "",
+        listItem: [
+            'Jeff Bezos',
+            'Bill Gates',
+            'Warren Buffett',
+            'Bernard Arnault'            
+        ],
+        feedback: "The richest man in the world is Jeff Bezos",
+        tyep: "order",
+        difficulty: 3
+    },
+    {
+        question: "Sort the list of names so the oldest person is on top",
+        QuestionPic: "",
+        listItem: [
+            'Yotam Avrahami',
+            'Limor Avrahami',
+            'Roi Ben-Zvi',
+            'Liron Blum'
+        ],
+        feedback: "The oldes person in the list is Yotam Avrahami",
+        tyep: "order",
+        difficulty: 1
+    }
+    
 ];
+availableQuesions = [...questions];
+//correntQuestion = availableQuesions[questionCount];
 
 // Store listitems
 const listItems = [];
-
 let dragStartIndex;
 
 createList();
 
+
 // Insert list items into DOM
 function createList() {
-    [...richestPeople]
+    correntQuestion = availableQuesions[questionCount];
+
+    orderQuestion.innerText = correntQuestion.question;
+    correntQuestion.listItem
         .map(a => ({ value: a, sort: Math.random() }))
         .sort((a, b) => a.sort - b.sort)
         .map(a => a.value)
@@ -33,12 +59,11 @@ function createList() {
             listItem.setAttribute('data-index', index);
 
             listItem.innerHTML = `
-        <span class="number">${index + 1}</span>
-        <div class="draggable" draggable="true">
-          <p class="person-name">${person}</p>
-          <i class="fas fa-grip-lines"></i>
-        </div>
-      `;
+             <div class="draggable" draggable="true">
+             <p class="person-name">${person}</p>
+             <i class="fas fa-grip-lines"></i>
+             </div>
+             `;
 
             listItems.push(listItem);
 
@@ -49,27 +74,23 @@ function createList() {
 }
 
 function dragStart() {
-    // console.log('Event: ', 'dragstart');
     dragStartIndex = +this.closest('li').getAttribute('data-index');
+    submitAnswer.disabled = false;
 }
 
 function dragEnter() {
-    // console.log('Event: ', 'dragenter');
     this.classList.add('over');
 }
 
 function dragLeave() {
-    // console.log('Event: ', 'dragleave');
     this.classList.remove('over');
 }
 
 function dragOver(e) {
-    // console.log('Event: ', 'dragover');
     e.preventDefault();
 }
 
 function dragDrop() {
-    // console.log('Event: ', 'drop');
     const dragEndIndex = +this.getAttribute('data-index');
     swapItems(dragStartIndex, dragEndIndex);
 
@@ -90,13 +111,18 @@ function checkOrder() {
     listItems.forEach((listItem, index) => {
         const personName = listItem.querySelector('.draggable').innerText.trim();
 
-        if (personName !== richestPeople[index]) {
+        //if (personName !== questions[index]) {
+        if (personName !== correntQuestion.listItem[index]) {
             listItem.classList.add('wrong');
         } else {
             listItem.classList.remove('wrong');
             listItem.classList.add('right');
         }
     });
+    questionCount++
+    setTimeout(() => {
+        createList();
+    }, 1000);
 }
 
 function addEventListeners() {
@@ -114,5 +140,3 @@ function addEventListeners() {
         item.addEventListener('dragleave', dragLeave);
     });
 }
-
-check.addEventListener('click', checkOrder);
