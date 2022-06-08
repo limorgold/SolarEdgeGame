@@ -3,13 +3,12 @@
     font-size:62.5%;
 }
 
-*{
-    box-sizing:border-box;
-    font-family:Assistant;
-    margin:0;
-    padding:0;
-    color:#333;
-
+* {
+    box-sizing: border-box;
+    font-family: Assistant;
+    margin: 0;
+    padding: 0;
+    color: #001546;
 }
 
 h1{
@@ -78,6 +77,7 @@ p {
     text-decoration: none;
     color: #56a5eb;
     background-color: white;
+    border-radius: 12px;
 }
 
     .btn:hover {
@@ -91,6 +91,27 @@ p {
         cursor: not-allowed;
         box-shadow: none;
         transform: none;
+    }
+
+.btnGreen {
+    font-size: 1.8rem;
+    font-weight: 900;
+    padding: 1rem 0;
+    width: 70%;
+    text-align: center;
+    border: 0.1rem solid #4aec96;
+    background-color: #4aec96;
+    color: #001546;
+    margin-bottom: 1rem;
+    text-decoration: none;
+    border-radius: 12px;
+}
+
+    .btnGreen:hover {
+        cursor: pointer;
+        box-shadow: 0 0.4rem 1.4rem 0 rgba(86, 185, 235, 0.5);
+        transform: translateY(-0.1rem);
+        transition: transform 150ms;
     }
 
 /* form */

@@ -1,9 +1,33 @@
 ﻿
+h1 {
+    background-color: #001546;
+    width: 100%;
+    height: 80px;
+    color: aliceblue;
+    text-align: center;
+}
+
 .arrow {
-    margin:auto;
+    margin: auto;
     width: 0;
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
     border-top: 40px solid #001546;
+    /*    transform: rotate(-20deg);
+*/
+}
+
+#spinBTN {
+    font-size: 1.8rem;
+    font-weight: 900;
+    padding: 1rem 0;
+    width: 70%;
+    text-align: center;
+    border: 0.1rem solid #001546;
+    background-color: #001546;
+    color: white;
+    margin-bottom: 1rem;
+    text-decoration: none;
+    border-radius: 12px;
 }

@@ -9,23 +9,20 @@
     <meta name="author" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <!-- CSS -->
-    <!--<link href="styles/reset.css" rel="stylesheet" />-->
     <link href="styles/myStyle.css" rel="stylesheet" />
     <link href="styles/Gambeling.css" rel="stylesheet" />
 
-    <!-- Scripts -->
-    <!----  <script src="jScripts/jquery-1.12.0.min.js"></script> -->
 </head>
 <body>
     <div class="container">
         <div class="flex-center flex-column">
 
             <h1> How Much Would You Like To Bet On Your Success </h1>
-            <p>Choose the points you'd like to gamble on for your success. <br /> 
-            If you answer the next question correctly, you'll gain the gambled points, but if you fail, you will lose the point.</p>
+            <!--<p>Choose the points you'd like to gamble on for your success. <br /> 
+            If you answer the next question correctly, you'll gain the gambled points, but if you fail, you will lose the point.</p>-->
             <p id="colectedScore"></p>
             <form>
-                <select id="gambelOptions" class="btn" onchange="gambelChoice()">
+                <select id="gambelOptions" class="btnGreen" onchange="gambelChoice()">
                     <Option>0</Option>
                     <Option>100</Option>
                     <Option>200</Option>
@@ -34,10 +31,10 @@
                     <Option>500</Option>
                     <Option>600</Option>
                 </select>
-                <p> You've chosen to gamble on </p> <p id="choosenGambel" style="color:red"></p>
+                <p> You've chosen to gamble on </p> <p id="choosenGambel"></p>
             </form>
 
-            <button type="button" id="gambelContinue" class="btn" onclick="gambelToContinue()"> Continue</button>
+            <button type="button" id="gambelContinue" class="btnGreen" onclick="gambelToContinue()"> Continue</button>
 
 
         </div>

@@ -3,8 +3,9 @@
     margin-bottom: 0.5rem;
     width: 100%;
     font-size: 1.8rem;
-    border: 0.1rem solid rgb(86,165,235,0.25);
-    background-color: white;
+    border: 0.1rem solid #001546;
+    border-radius: 10px;
+    background-color: #edf8fe;
 }
 
     .choiceContainer:hover {
@@ -32,6 +33,7 @@
 .chosenAnswer {
     background-color: darkgray;
 }
+
 /* HUD */
 #hud {
     display: flow;
@@ -39,28 +41,51 @@
 }
 
 .hud-prefix {
-    text-align: center;
     font-size: 2rem;
 }
 
-.hud-main-text {
-    text-align: center;
-}
 
-#progressBar{
-    width: 20rem;
-    height: 4rem;
-    border: 0.3rem solid #56a5eb;
+#progressBar {
+    width: 100%;
+    height: 1rem;
+    background-color: #edf8fe;
 }
 
 #progressBarFull {
-    height: 3.4rem;
-    background-color: #56a5eb;
-    width:0%;
-
+    height: 1rem;
+    background-color: #001546;
+    width: 0%;
+    margin-bottom: 0.5rem;
 }
 
 /*imeg*/
 #QuestionPic {
     padding: 1.5rem;
 }
+
+#timer {
+    background-color: #4aec96;
+    color: #001546;
+    width: 100%;
+    height: 4rem;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight:900;
+    padding:10px;
+}
+
+#points {
+    background-color: #001546;
+    color: white;
+    width: 20%;
+    height: 2rem;
+    padding-left: 10px;
+}
+
+    #points div {
+        color: white;
+    }
+
+    #points span {
+        color: white;
+    }

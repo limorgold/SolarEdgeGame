@@ -1,1 +1,14 @@
-﻿
+﻿:root {
+    background-color: #001546;
+}
+
+h1{
+    color:white;
+    text-align:center;
+}
+
+p {
+    color: white;
+    text-align: center;
+}
+

@@ -24,6 +24,5 @@ StartTheGame = (e) => {
     }
     else {
         ErrorHelp.innerText = "Plese enter your full name and Email";
-
     }
 }
